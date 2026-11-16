@@ -2,3 +2,4 @@ services:
   - type: web
     name: laravel-project
     env: docker
+    rootDir: my-app
