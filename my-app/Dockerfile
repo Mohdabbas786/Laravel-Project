@@ -19,11 +19,13 @@ RUN a2enmod rewrite
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
-COPY . .
+COPY . .RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Run composer install
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-
+# Point Apache document root to Laravel's public folder
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 EXPOSE 8080
 RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 CMD ["apache2-foreground"]
