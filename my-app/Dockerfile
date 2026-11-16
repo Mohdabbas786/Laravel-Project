@@ -37,6 +37,7 @@ RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 # Expose port 8080 and update ports configuration
 EXPOSE 8080
 RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
-
+# Create the SQLite database file so Laravel doesn't crash on boot
+RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite && chmod -R 777 /var/www/html/database
 # Start Apache
 CMD ["apache2-foreground"]
