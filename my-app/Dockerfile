@@ -41,4 +41,4 @@ RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/00
 RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite && chmod -R 777 /var/www/html/database
 # Start Apache
 # Start Apache and run database migrations automatically
-CMD php artisan migrate --force && apache2-foreground
+CMD ["apache2-foreground"]
