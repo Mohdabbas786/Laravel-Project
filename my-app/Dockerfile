@@ -38,11 +38,13 @@ RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 EXPOSE 8080
 RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 # Create SQLite file and set permissions
+# Create SQLite file and set permissions
 RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite && chmod -R 777 /var/www/html/database
 
-# Expose port 8080 and update ports configuration
+# Expose port 8080 and correctly update Apache ports once
 EXPOSE 8080
-RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+RUN echo "Listen 8080" > /etc/apache2/ports.conf && \
+    sed -i 's/:80/:8080/g' /etc/apache2/sites-available/000-default.conf
 
 # Automatically run migrations and start Apache safely
 CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
