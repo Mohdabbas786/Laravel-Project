@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    return view('welcome', ['name' => 'Developer']);
+Route::get('/submit-name', function () {
+    return view('submit-name'); // Or return a simple string
 });
 
 Route::post('/submit-name', function (Request $request) {
