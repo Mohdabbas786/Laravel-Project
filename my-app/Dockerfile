@@ -27,6 +27,9 @@ COPY . .
 # Set proper permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Create SQLite database file and set permissions
+RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite && chmod -R 777 /var/www/html/database
+
 # Run composer install
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
@@ -34,16 +37,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 
-# Expose port 8080 and update ports configuration
-EXPOSE 8080
-RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
-# Create SQLite file and set permissions
-RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite && chmod -R 777 /var/www/html/database
-
-# Expose port 8080 and cleanly configure Apache ports
-EXPOSE 8080
-RUN echo "Listen 8080" > /etc/apache2/ports.conf && \
-    sed -i 's/:80/:8080/g' /etc/apache2/sites-available/000-default.conf
+# Expose port 80
+EXPOSE 80
 
 # Automatically run migrations and start Apache safely
 CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
