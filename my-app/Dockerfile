@@ -18,10 +18,10 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set working directory to Apache's root
 WORKDIR /var/www/html
 
-# Copy project files into the container
+# Copy your application files (since Dockerfile is inside my-app, copy from current context)
 COPY . .
 
 # Set proper permissions for Laravel storage and cache
